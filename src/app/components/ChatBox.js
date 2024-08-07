@@ -27,7 +27,7 @@ export default function ChatBox({ currentChat }) {
                 </Typography>
             </Box>
 
-            {/* Display chat history */}
+            {/* Display current chat */}
             <Box
                 display={'flex'}
                 flexDirection={'column'}
