@@ -1,6 +1,8 @@
 'use client';
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
+import ReactMarkdown from 'react-markdown';
+
 
 export default function ChatBox({ currentChat }) {
     return (
@@ -48,7 +50,11 @@ export default function ChatBox({ currentChat }) {
                             border: message.type === 'user' ? '1px solid #1A4D2E' : 'none',
                         }}
                     >
-                        {message.text}
+                        {message.type === 'bot' ? (
+              <ReactMarkdown>{message.text}</ReactMarkdown>
+            ) : (
+              message.text
+            )}
                     </Paper>
                 ))}
             </Box>
