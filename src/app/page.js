@@ -5,6 +5,20 @@ import HistorySidebar from "./components/HistorySidebar";
 import ChatBox from "./components/ChatBox";
 import ChatInput from "./components/ChatInput";
 
+// Firebase imports
+import { firestore } from '../lib/firebase';
+import {
+  collection,
+  addDoc,
+  query,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+  where, // Import where for querying specific user's items
+} from 'firebase/firestore';
+
 export default function ChatBot() {
   const [history, setHistory] = useState([]);
   const [currentChatIndex, setCurrentChatIndex] = useState(null);
@@ -74,6 +88,9 @@ export default function ChatBot() {
     setHistory([...history, newChat]);
     setCurrentChatIndex(history.length);
   };
+
+  // Save chat history to Firestore databse
+
 
   return (
     <Box width="100vw" height="100vh" bgcolor={"#1A4D2E"} display={"flex"}>
