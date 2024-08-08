@@ -1,18 +1,17 @@
 import { OpenAI } from 'openai';
-import 'dotenv/config'; // Load environment variables from .env file
+import { NextResponse } from 'next/server'
+import 'dotenv/config';
 
-// Initialize OpenAI with the provided API key
 const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
 export async function POST(req) {
   try {
-    const { userMessage } = await req.json(); // Parse the incoming request body
+    const { userMessage } = await req.json();
 
     if (!userMessage) {
       return new Response(JSON.stringify({ error: "The userMessage parameter is required." }), { status: 400 });
     }
 
-    // Create a list of messages to send to OpenAI
     const messages = [
       {
         role: 'system',
@@ -24,33 +23,17 @@ export async function POST(req) {
       }
     ];
 
-    // Request a stream of data from the AI model
-    const responseStream = await openai.chat.completions.create({
+    const response = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: messages,
-      max_tokens: 1000,
-      stream: true,
+      max_tokens: 100,
     });
 
-    // Initialize encoders/decoders for streaming data
-    const encoder = new TextEncoder();
-    const decoder = new TextDecoder();
+    const assistantMessage = response.choices[0].message.content.trim();
 
-    // Create a streamable response using ReadableStream
-    return new Response(
-      new ReadableStream({
-        async start(controller) {
-          for await (const chunk of responseStream) {
-            const text = decoder.decode(chunk); // Decode the chunk
-            controller.enqueue(encoder.encode(text)); // Stream the data to the client
-          }
-          controller.close(); // Close the stream when done
-        }
-      }),
-      { headers: { 'Content-Type': 'text/event-stream' } }
-    );
+    return new Response(JSON.stringify({ message: assistantMessage }), { status: 200 });
   } catch (error) {
     console.error('Error:', error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 }); // Handle errors gracefully
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
