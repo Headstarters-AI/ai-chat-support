@@ -1,5 +1,27 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+# AI Chatbot Project
+
+This project is a chatbot application built with Next.js and React, using OpenAI for intelligent responses and MongoDB for authentication and data storage.
+
+## Project Structure
+
+- **Configuration Files**: `.eslintrc.json`, `jsconfig.json`, `next.config.mjs`, `package.json`
+- **Documentation**: `README.md`
+- **Public Assets**: Images and icons in `public/`
+- **CSS**: Global styles in `src/app/globals.css`
+- **Main Application Files**:
+  - API and chat components in `src/app/api/chat/` and `src/app/components/`
+  - Authentication and page components in `src/pages/` and `src/context/`
+  - Utility files in `src/lib/`
+
+## Features
+
+1. **JWT Authentication**: Secure login and sign-up.
+2. **Database Integration**: MongoDB for user data.
+3. **Streaming AI Responses**: Real-time chat responses.
+4. **New features coming up** : Under updation.
+
 ## Getting Started
 
 First, run the development server:
