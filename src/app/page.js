@@ -10,10 +10,12 @@ export default function ChatBot() {
   const [currentChatIndex, setCurrentChatIndex] = useState(null);
   const [question, setQuestion] = useState("");
 
+  // Handle input change in the chat input box
   const handleInputChange = (event) => {
     setQuestion(event.target.value);
   };
 
+  // Handle form submission to send the user question to the API
   const handleSubmit = async () => {
     if (question.trim() === "") return;
 
@@ -61,10 +63,12 @@ export default function ChatBot() {
     setQuestion("");
   };
 
+  // Handle clicks on the chat history items
   const handleHistoryClick = (index) => {
     setCurrentChatIndex(index);
   };
 
+  // Handle the creation of a new chat session
   const handleNewChat = () => {
     const newChat = { title: `New Chat ${history.length + 1}`, chat: [] };
     setHistory([...history, newChat]);
