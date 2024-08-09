@@ -22,15 +22,17 @@ export default function ChatBox({ currentChat }) {
             sx={{
               p: 2,
               mb: 2,
-              backgroundColor: message.type === "user" ? "#E8DFCA" : "#AACB73",
+              backgroundColor: message.role === "user" ? "#E8DFCA" : "#AACB73",
               color: "#1A4D2E",
               maxWidth: "80%",
-              ml: message.type === "user" ? "auto" : 0,
-              mr: message.type === "user" ? 0 : "auto",
+              ml: message.role === "user" ? "auto" : 0,
+              mr: message.role === "user" ? 0 : "auto",
               borderRadius: 2,
+              height: message.content === "" ? "54px" : "auto",
             }}
+
           >
-            <Typography variant="body1">{message.text}</Typography>
+            <Typography variant="body1">{message.content}</Typography>
           </Paper>
         ))
       ) : (

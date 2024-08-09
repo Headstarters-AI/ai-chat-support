@@ -14,29 +14,24 @@ import HistorySidebar from "./components/HistorySidebar";
 import ChatBox from "./components/ChatBox";
 import ChatInput from "./components/ChatInput";
 
-// Firebase imports
-import { firestore } from "../lib/firebase";
-import {
-  collection,
-  addDoc,
-  query,
-  onSnapshot,
-  deleteDoc,
-  doc,
-  setDoc,
-  updateDoc,
-  where,
-} from "firebase/firestore";
-
 const drawerWidth = 280;
 
 export default function ChatBot() {
+  const [messages, setMessages] = useState([
+    {
+      role: 'assistant',
+      content: "Hi! I'm the Headstarter support assistant. How can I help you today?",
+    },
+  ])
+  const [message, setMessage] = useState('')
+
   const [history, setHistory] = useState([]);
   const [currentChatIndex, setCurrentChatIndex] = useState(null);
   const [question, setQuestion] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -48,54 +43,89 @@ export default function ChatBot() {
   };
 
   // Handle form submission to send the user question to the API
-  const handleSubmit = async () => {
-    if (question.trim() === "") return;
+  const sendMessage = async () => {
+    const newMessage = { role: 'user', content: question };
+    const assistantMessage = { role: 'assistant', content: '' };
 
-    const newChat = { type: "user", text: question };
-    const updatedHistory = [...history];
-
-    if (currentChatIndex !== null) {
-      updatedHistory[currentChatIndex].chat.push(newChat);
-    }
-
-    setHistory(updatedHistory);
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userMessage: question }),
+    // Update current chat session with the user's new message and a placeholder for the assistant's response
+    setHistory((prevHistory) => {
+      const updatedHistory = prevHistory.map((chat, index) => {
+        if (index === currentChatIndex) {
+          return {
+            ...chat,
+            chat: [...chat.chat, newMessage, assistantMessage],
+          };
+        }
+        return chat;
       });
 
-      const data = await response.json();
-      const botResponse = { type: "bot", text: data.message };
+      return updatedHistory;
+    });
 
-      const updatedHistoryWithResponse = [...updatedHistory];
-      if (currentChatIndex !== null) {
-        updatedHistoryWithResponse[currentChatIndex].chat.push(botResponse);
-      }
+    // Clear the input field
+    setQuestion('');
 
-      setHistory(updatedHistoryWithResponse);
-    } catch (error) {
-      console.error("Error:", error);
+    // Send the user's message to the server
+    const response = fetch('/api/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify([...history[currentChatIndex].chat, newMessage]), // Send the current chat history with the new message
+    }).then(async (res) => {
+      const reader = res.body.getReader(); // Get a reader to read the response body
+      const decoder = new TextDecoder(); // Create a decoder to decode the response text
 
-      const errorMessage = {
-        type: "bot",
-        text: "Sorry, something went wrong. Please try again later.",
-      };
+      let assistantResponse = ''; // Initialize a string to accumulate the assistant's response
+      return reader.read().then(function processText({ done, value }) {
+        if (done) {
+          // Update the assistant's final response when streaming is complete
+          setHistory((prevHistory) => {
+            const updatedHistory = prevHistory.map((chat, index) => {
+              if (index === currentChatIndex) {
+                let updatedChat = chat.chat.slice(0, -1); // Remove the assistant's placeholder
+                updatedChat.push({ role: 'assistant', content: assistantResponse }); // Add the complete assistant response
 
-      const updatedHistoryWithError = [...updatedHistory];
-      if (currentChatIndex !== null) {
-        updatedHistoryWithError[currentChatIndex].chat.push(errorMessage);
-      }
+                return {
+                  ...chat,
+                  chat: updatedChat,
+                };
+              }
+              return chat;
+            });
 
-      setHistory(updatedHistoryWithError);
-    }
+            return updatedHistory;
+          });
+          return assistantResponse;
+        }
 
-    setQuestion("");
+        const text = decoder.decode(value || new Uint8Array(), { stream: true }); // Decode the text
+        assistantResponse += text; // Accumulate the chunks of the response
+
+        // Update the assistant's message in real-time
+        setHistory((prevHistory) => {
+          const updatedHistory = prevHistory.map((chat, index) => {
+            if (index === currentChatIndex) {
+              let updatedChat = chat.chat.slice(0, -1); // Remove the assistant's placeholder
+              updatedChat.push({ role: 'assistant', content: assistantResponse }); // Add the current accumulated response
+
+              return {
+                ...chat,
+                chat: updatedChat,
+              };
+            }
+            return chat;
+          });
+
+          return updatedHistory;
+        });
+
+        return reader.read().then(processText); // Continue reading the next chunk of the response
+      });
+    });
   };
+
+
 
   // Handle clicks on the chat history items
   const handleHistoryClick = (index) => {
@@ -135,6 +165,7 @@ export default function ChatBot() {
             edge="start"
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: "none" } }}
+            onChange={(e) => setMessage(e.target.value)}
           >
             <SendIcon />
           </IconButton>
@@ -172,7 +203,7 @@ export default function ChatBot() {
           <ChatInput
             question={question}
             onChange={handleInputChange}
-            onSubmit={handleSubmit}
+            onSubmit={sendMessage}
           />
         )}
       </Box>
