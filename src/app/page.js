@@ -9,7 +9,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
+import SendIcon from "@mui/icons-material/Search";
 import HistorySidebar from "./components/HistorySidebar";
 import ChatBox from "./components/ChatBox";
 import ChatInput from "./components/ChatInput";
@@ -136,7 +136,7 @@ export default function ChatBot() {
             onClick={handleDrawerToggle}
             sx={{ mr: 2, display: { sm: "none" } }}
           >
-            <MenuIcon />
+            <SendIcon />
           </IconButton>
           <Typography variant="h5" noWrap component="div">
             AI Chat Assistant

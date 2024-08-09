@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { TextField, InputAdornment, Box } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+import SendIcon from '@mui/icons-material/Send';
 
 export default function ChatInput({ question, onChange, onSubmit }) {
     return (
@@ -42,7 +42,7 @@ export default function ChatInput({ question, onChange, onSubmit }) {
                 InputProps={{
                     endAdornment: (
                         <InputAdornment position="end">
-                            <SearchIcon
+                            <SendIcon
                                 sx={{ color: '#E8DFCA', cursor: 'pointer' }}
                                 onClick={onSubmit}
                             />
