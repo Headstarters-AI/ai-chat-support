@@ -1,13 +1,22 @@
 "use client";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 
 export default function ChatBox({ currentChat }) {
+  const chatBoxRef = useRef(null);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [currentChat]);
+
   return (
     <Box
+      ref={chatBoxRef}
       sx={{
         flexGrow: 1,
-        overflow: "auto",
+        overflow: "auto", // Use "auto" for proper scrolling
         p: 2,
         backgroundColor: "#F9F5EB",
         borderRadius: 2,
@@ -30,7 +39,6 @@ export default function ChatBox({ currentChat }) {
               borderRadius: 2,
               height: message.content === "" ? "54px" : "auto",
             }}
-
           >
             <Typography variant="body1">{message.content}</Typography>
           </Paper>

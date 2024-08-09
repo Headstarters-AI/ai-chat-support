@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   AppBar,
@@ -124,7 +124,6 @@ export default function ChatBot() {
       });
     });
   };
-
 
 
   // Handle clicks on the chat history items
