@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import { Box, Typography, Paper } from "@mui/material";
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function ChatBox({ currentChat }) {
   const chatBoxRef = useRef(null);
@@ -24,7 +27,7 @@ export default function ChatBox({ currentChat }) {
         backgroundColor: "#F9F5EB",
         borderRadius: 2,
         mb: 2,
-        maxHeight: "80vh"
+        maxHeight: "80vh",
       }}
     >
       {currentChat && currentChat.length > 0 ? (
@@ -42,9 +45,49 @@ export default function ChatBox({ currentChat }) {
               mr: message.role === "user" ? 0 : "auto",
               borderRadius: 2,
               height: message.content === "" ? "54px" : "auto",
+              wordWrap: "break-word", // Ensure long words break and don't overflow
             }}
           >
-            <Typography variant="body1">{message.content}</Typography>
+            <Typography variant="body1">
+              <ReactMarkdown
+                components={{
+                  code({ node, inline, className, children, ...props }) {
+                    const match = /language-(\w+)/.exec(className || '');
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        style={materialDark}
+                        language={match[1]}
+                        PreTag="div"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    );
+                  },
+                  ul: ({ children, ...props }) => (
+                    <ul style={{ paddingLeft: "20px", margin: 0 }} {...props}>
+                      {children}
+                    </ul>
+                  ),
+                  ol: ({ children, ...props }) => (
+                    <ol style={{ paddingLeft: "20px", margin: 0 }} {...props}>
+                      {children}
+                    </ol>
+                  ),
+                  li: ({ children, ...props }) => (
+                    <li style={{ paddingLeft: "10px", marginBottom: "8px", listStyleType: "disc" }} {...props}>
+                      {children}
+                    </li>
+                  ),
+                }}
+              >
+                {message.content}
+              </ReactMarkdown>
+            </Typography>
           </Paper>
         ))
       ) : (
