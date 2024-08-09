@@ -203,6 +203,7 @@ export default function ChatBot() {
             question={question}
             onChange={handleInputChange}
             onSubmit={sendMessage}
+
           />
         )}
       </Box>

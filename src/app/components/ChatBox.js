@@ -4,11 +4,14 @@ import { Box, Typography, Paper } from "@mui/material";
 
 export default function ChatBox({ currentChat }) {
   const chatBoxRef = useRef(null);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
-    if (chatBoxRef.current) {
-      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-    }
+    scrollToBottom();
   }, [currentChat]);
 
   return (
@@ -16,11 +19,12 @@ export default function ChatBox({ currentChat }) {
       ref={chatBoxRef}
       sx={{
         flexGrow: 1,
-        overflow: "auto", // Use "auto" for proper scrolling
+        overflow: "auto",
         p: 2,
         backgroundColor: "#F9F5EB",
         borderRadius: 2,
         mb: 2,
+        maxHeight: "80vh"
       }}
     >
       {currentChat && currentChat.length > 0 ? (
@@ -53,6 +57,7 @@ export default function ChatBox({ currentChat }) {
           Start a new chat or select a chat from the history.
         </Typography>
       )}
+      <div ref={messagesEndRef} />
     </Box>
   );
 }
