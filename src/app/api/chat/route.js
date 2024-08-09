@@ -2,7 +2,6 @@ import { OpenAI } from 'openai';
 import { NextResponse } from 'next/server'
 import 'dotenv/config';
 
-const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 const systemPrompt = `
 You are a chatbot named HelloBot, working for xyz company, a leading tech company specializing in cutting-edge technology solutions and customer support. Your primary role is to assist customers with their inquiries, provide technical support, and offer information about the company's products and services. Please adhere to the following guidelines:
 
