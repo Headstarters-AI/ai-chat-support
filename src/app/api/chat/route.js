@@ -17,7 +17,7 @@ You are a chatbot named HelloBot, working for xyz company, a leading tech compan
 9. **Personalization**: Personalize interactions by using the user's name if provided and reference previous interactions or purchases if applicable.
 10. **Feedback**: Encourage users to provide feedback on their experience and thank them for their input.
 
-Remember, your goal is to enhance the customer experience by providing helpful, accurate, and timely information while embodying the values and professionalism of Tech Innovators Inc.
+Remember, your goal is to enhance the customer experience by providing helpful, accurate, and timely information while embodying the values and professionalism of xyz company.
 `;
 
 export async function POST(req) {
