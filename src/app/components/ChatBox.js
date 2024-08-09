@@ -1,63 +1,48 @@
-'use client';
-import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
-import ReactMarkdown from 'react-markdown';
-
+"use client";
+import React from "react";
+import { Box, Typography, Paper } from "@mui/material";
 
 export default function ChatBox({ currentChat }) {
-    return (
-        <Box
-            id="chat-box"
-            flexGrow={1}
-            display={'flex'}
-            flexDirection={'column'}
-            justifyContent={'flex-start'}
-            padding="20px"
-            overflow="auto"
+  return (
+    <Box
+      sx={{
+        flexGrow: 1,
+        overflow: "auto",
+        p: 2,
+        backgroundColor: "#F9F5EB",
+        borderRadius: 2,
+        mb: 2,
+      }}
+    >
+      {currentChat && currentChat.length > 0 ? (
+        currentChat.map((message, index) => (
+          <Paper
+            key={index}
+            elevation={1}
+            sx={{
+              p: 2,
+              mb: 2,
+              backgroundColor: message.type === "user" ? "#E8DFCA" : "#AACB73",
+              color: "#1A4D2E",
+              maxWidth: "80%",
+              ml: message.type === "user" ? "auto" : 0,
+              mr: message.type === "user" ? 0 : "auto",
+              borderRadius: 2,
+            }}
+          >
+            <Typography variant="body1">{message.text}</Typography>
+          </Paper>
+        ))
+      ) : (
+        <Typography
+          variant="body1"
+          color="#1A4D2E"
+          textAlign="center"
+          justifyContent="center"
         >
-            <Box display={'flex'}
-                justifyContent={'center'}>
-                <Typography
-                    variant="h3"
-                    width="28%"
-                    borderBottom={'3px solid #E8DFCA'}
-                    textAlign={'center'}
-                    color={'#E8DFCA'}
-                    marginBottom="20px"
-                >
-                    <b>Chat Box</b>
-                </Typography>
-            </Box>
-
-            {/* Display current chat */}
-            <Box
-                display={'flex'}
-                flexDirection={'column'}
-                alignItems={'center'}
-                justifyContent={'flex-start'}
-                width="100%"
-            >
-                {currentChat.map((message, index) => (
-                    <Paper
-                        key={index}
-                        sx={{
-                            padding: '10px 15px',
-                            marginBottom: '10px',
-                            maxWidth: '70%',
-                            alignSelf: message.type === 'user' ? 'flex-end' : 'flex-start',
-                            backgroundColor: message.type === 'user' ? '#E8DFCA' : '#1A4D2E',
-                            color: message.type === 'user' ? '#1A4D2E' : '#E8DFCA',
-                            border: message.type === 'user' ? '1px solid #1A4D2E' : 'none',
-                        }}
-                    >
-                        {message.type === 'bot' ? (
-              <ReactMarkdown>{message.text}</ReactMarkdown>
-            ) : (
-              message.text
-            )}
-                    </Paper>
-                ))}
-            </Box>
-        </Box>
-    );
+          Start a new chat or select a chat from the history.
+        </Typography>
+      )}
+    </Box>
+  );
 }
