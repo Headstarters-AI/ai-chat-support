@@ -10,6 +10,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import MenuIcon from "@mui/icons-material/Menu";
 
 const drawerWidth = 280;
@@ -20,6 +22,7 @@ export default function HistorySidebar({
   onNewChat,
   mobileOpen,
   handleDrawerToggle,
+  onDeleteChat
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -83,10 +86,21 @@ export default function HistorySidebar({
               },
               textTransform: "none",
               width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
             }}
             onClick={() => onHistoryClick(index)}
           >
             {item.title}
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent the button click from triggering the chat selection
+                onDeleteChat(index);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
           </Button>
         ))}
       </Stack>

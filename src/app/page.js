@@ -44,6 +44,10 @@ export default function ChatBot() {
 
   // Handle form submission to send the user question to the API
   const sendMessage = async () => {
+    if (currentChatIndex === null || !history[currentChatIndex]) {
+      console.error("No chat selected or invalid chat index.");
+      return;
+    }
     const newMessage = { role: 'user', content: question };
     const assistantMessage = { role: 'assistant', content: '' };
 
@@ -135,7 +139,27 @@ export default function ChatBot() {
   const handleNewChat = () => {
     const newChat = { title: `New Chat ${history.length + 1}`, chat: [] };
     setHistory([...history, newChat]);
-    setCurrentChatIndex(history.length);
+    setCurrentChatIndex(history.length); // Set to the newly created chat's index
+  };
+
+  // Delete a new chat session
+  const deleteChat = (indexToDelete) => {
+    setHistory((prevHistory) => {
+      const newHistory = prevHistory.filter((_, index) => index !== indexToDelete);
+
+      // Update currentChatIndex if necessary
+      let newCurrentChatIndex = currentChatIndex;
+      if (currentChatIndex === indexToDelete) {
+        // If the current chat is deleted, reset the index
+        newCurrentChatIndex = null;
+      } else if (currentChatIndex > indexToDelete) {
+        // Adjust the index if the deleted chat was before the current one
+        newCurrentChatIndex -= 1;
+      }
+
+      setCurrentChatIndex(newCurrentChatIndex);
+      return newHistory;
+    });
   };
 
   // Save chat history to Firestore databse
@@ -178,6 +202,7 @@ export default function ChatBot() {
         history={history}
         onHistoryClick={handleHistoryClick}
         onNewChat={handleNewChat}
+        onDeleteChat={deleteChat}
         mobileOpen={mobileOpen}
         handleDrawerToggle={handleDrawerToggle}
       />
@@ -195,9 +220,9 @@ export default function ChatBot() {
         }}
       >
         <Toolbar /> {/* This is to offset the fixed AppBar */}
-        {currentChatIndex !== null && (
-          <ChatBox currentChat={history[currentChatIndex].chat} />
-        )}
+        {currentChatIndex !== null ?
+          <ChatBox currentChat={history[currentChatIndex].chat} /> : true
+        }
         {currentChatIndex !== null && (
           <ChatInput
             question={question}
