@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import { TextField, Button, Typography, Container, Box, Link } from "@mui/material";
 import { useAuth } from "../../hooks/useAuth";
 
 export default function Login() {
@@ -14,9 +14,8 @@ export default function Login() {
     e.preventDefault();
     try {
       await login(email, password);
-      // Redirect is handled in the login function
     } catch (error) {
-      setError(error.message);
+      setError("Invalid email or password. Please try again.");
     }
   };
 
@@ -66,6 +65,9 @@ export default function Login() {
           >
             Login
           </Button>
+          <Link href="/signup" variant="body2">
+            {"Don't have an account? Sign Up"}
+          </Link>
         </Box>
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>
