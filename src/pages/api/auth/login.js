@@ -1,23 +1,32 @@
-import bcrypt from 'bcryptjs'; // Library for comparing passwords
-import jwt from 'jsonwebtoken'; // Library for generating JWT tokens
-import { connectToDatabase } from '../../../lib/db'; // Utility function to connect to MongoDB
+// src/pages/api/login.js
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import dbConnect from '../../../lib/db';
+import User from '../../../models/user';
 
-export default async function login(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).end(); // Return 405 if method is not POST
+const JWT_SECRET = '123456'
+
+export default async function handler(req, res) {
+  await dbConnect();
+
+  const { username, password } = req.body;
+
+  // Find user by username
+  const user = await User.findOne({ username });
+
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid credentials' });
   }
 
-  const { email, password } = req.body;
-  const { db } = await connectToDatabase(); // Connect to the database
+  // Compare the provided password with the stored hashed password
+  const isMatch = await bcrypt.compare(password, user.password);
 
-  // Find the user in the database
-  const user = await db.collection('users').findOne({ email });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).json({ error: 'Invalid credentials' }); // Return 401 if credentials are invalid
+  if (!isMatch) {
+    return res.status(401).json({ message: 'Invalid credentials' });
   }
 
-  // Generate a JWT token
-  const token = jwt.sign({ userId: user._id, email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  // Create a JWT token
+  const token = jwt.sign({ userId: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 
-  return res.status(200).json({ token }); // Return the token to the client
+  res.status(200).json({ token });
 }

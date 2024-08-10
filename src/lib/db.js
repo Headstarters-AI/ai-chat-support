@@ -1,23 +1,26 @@
-import { MongoClient } from 'mongodb';
+import mongoose from 'mongoose';
 
-let cachedClient = null;
-let cachedDb = null;
+if (!global.mongoose) {
+  global.mongoose = { conn: null, promise: null };
+}
 
-// Connect to MongoDB and cache the connection for reuse
-export async function connectToDatabase() {
-  if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb }; // Return cached connection if it exists
+export default async function dbConnect() {
+  if (global.mongoose.conn) {
+    console.log('Connected from previous');
+    return global.mongoose.conn;
+  } else {
+    const conString = process.env.MONGODB_URI;
+    
+    if (!global.mongoose.promise) {
+      global.mongoose.promise = mongoose.connect(conString, {
+        autoIndex: true,
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+    }
+
+    global.mongoose.conn = await global.mongoose.promise;
+    console.log('Newly connected');
+    return global.mongoose.conn;
   }
-
-  const client = await MongoClient.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
-  const db = client.db(process.env.MONGODB_DB);
-
-  cachedClient = client;
-  cachedDb = db;
-
-  return { client, db }; // Return the database connection
 }

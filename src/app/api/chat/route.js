@@ -33,7 +33,7 @@ const getUpdatedSystemPrompt = () => {
 };
 
 export async function POST(req) {
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY }); // Ensure API key is set correctly
+  const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY }); // Ensure API key is set correctly
   const data = await req.json(); // Parse the JSON body of the incoming request
 
   const updatedSystemPrompt = getUpdatedSystemPrompt();
