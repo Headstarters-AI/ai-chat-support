@@ -1,8 +1,8 @@
-import { OpenAI } from 'openai';
-import { NextResponse } from 'next/server';
-import 'dotenv/config';
+import { OpenAI } from "openai";
+import { NextResponse } from "next/server";
+import "dotenv/config";
 
-const systemPrompt = `
+const baseSystemPrompt = `
 You are a chatbot named HelloBot, working for xyz company, a leading tech company specializing in cutting-edge technology solutions and customer support. Your primary role is to assist customers with their inquiries, provide technical support, and offer information about the company's products and services. Please adhere to the following guidelines:
 
 1. **Polite and Professional**: Always maintain a polite, friendly, and professional tone, regardless of the user's attitude.
@@ -15,18 +15,33 @@ You are a chatbot named HelloBot, working for xyz company, a leading tech compan
 8. **Updates and Promotions**: Inform users about new updates, features, or promotions in a non-intrusive manner. Ensure that such information is relevant to their inquiry.
 9. **Personalization**: Personalize interactions by using the user's name if provided and reference previous interactions or purchases if applicable.
 10. **Feedback**: Encourage users to provide feedback on their experience and thank them for their input.
+11. **Current Information**: For time-sensitive information like the current date, time, or recent events, always refer to the most up-to-date information provided by the system. Do not rely on your training data for such information.
 
 Remember, your goal is to enhance the customer experience by providing helpful, accurate, and timely information while embodying the values and professionalism of xyz company.
+
+IMPORTANT: The current date is {current_date}. Always use this date when responding to date-related queries.
 `;
+
+const getCurrentDate = () => {
+  const today = new Date();
+  return today.toDateString(); // Returns date in format: "Sat Aug 10 2024"
+};
+
+const getUpdatedSystemPrompt = () => {
+  const currentDate = getCurrentDate();
+  return baseSystemPrompt.replace("{current_date}", currentDate);
+};
 
 export async function POST(req) {
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY }); // Ensure API key is set correctly
   const data = await req.json(); // Parse the JSON body of the incoming request
 
+  const updatedSystemPrompt = getUpdatedSystemPrompt();
+
   // Create a chat completion request to the OpenAI API
   const completion = await openai.chat.completions.create({
-    messages: [{ role: 'system', content: systemPrompt }, ...data], // Include the system prompt and user messages
-    model: 'gpt-3.5-turbo', // Specify the model to use
+    messages: [{ role: "system", content: updatedSystemPrompt }, ...data], // Include the updated system prompt and user messages
+    model: "gpt-3.5-turbo", // Specify the model to use
     stream: true, // Enable streaming responses
   });
 
