@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { TextField, Button, Typography, Container, Box } from "@mui/material";
+import { TextField, Button, Typography, Container, Box, Link } from "@mui/material";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig"; // You'll need to create this
 
@@ -14,9 +14,10 @@ export default function SignUp() {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      // Redirect to login page or dashboard
+      // Redirect to login page after successful registration
+      window.location.href = "/login";
     } catch (error) {
-      setError(error.message);
+      setError("Failed to create an account. Please try again.");
     }
   };
 
@@ -66,6 +67,9 @@ export default function SignUp() {
           >
             Sign Up
           </Button>
+          <Link href="/login" variant="body2">
+            {"Already have an account? Login"}
+          </Link>
         </Box>
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>
