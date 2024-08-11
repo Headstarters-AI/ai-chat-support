@@ -32,7 +32,7 @@ export default function ChatBot() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -230,19 +230,18 @@ export default function ChatBot() {
     });
   };
 
-  // const handleLogout = () => {
-  //   localStorage.removeItem("authToken");
-  //   localStorage.removeItem("userId");
-  //   localStorage.removeItem("username");
+   const handleLogout = () => {
+     localStorage.removeItem("authToken");
+     localStorage.removeItem("userId");
+     localStorage.removeItem("username");
 
-  //   setUser(null);
-  //   setHistory([]);
-  //   setCurrentChatIndex(null);
+     setUser('');
+     setHistory([]);
+    setCurrentChatIndex(null);
+    window.location.reload(); 
+   };
 
-  //   window.location.href = "/login";
-  // };
-
-  // Save chat history to Firestore databse
+  
 
   return (
     <Box
@@ -282,7 +281,7 @@ export default function ChatBot() {
           <IconButton
             color="inherit"
             aria-label="logout"
-            // onClick={handleLogout}
+             onClick={handleLogout}
           >
             <LogoutIcon />
           </IconButton>
