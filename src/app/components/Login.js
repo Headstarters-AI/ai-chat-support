@@ -56,7 +56,7 @@ const Login = ({ onLogin }) => {
       }}
     >
       {isAuthenticated ? (
-        <ChatBot />
+        <ChatBot onLogout={() => setHasLoggedOut(true)} />
       ) : (
         <>
           {showRegister ? (

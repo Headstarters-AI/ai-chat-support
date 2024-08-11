@@ -9,6 +9,7 @@ import {
   useTheme,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Search";
+import LogoutIcon from "@mui/icons-material/Logout";
 import HistorySidebar from "./HistorySidebar";
 import ChatBox from "./ChatBox";
 import ChatInput from "./ChatInput";
@@ -44,14 +45,16 @@ export default function ChatBot() {
           const fetchedHistory = data.history || [];
           setHistory(fetchedHistory);
           if (fetchedHistory.length > 0) {
-            setCurrentChatIndex(0); // Set to the first chat
+            setCurrentChatIndex(0);
           } else {
-            handleNewChat(); // Create a new chat if history is empty
+            handleNewChat();
           }
         })
         .catch((error) => {
           console.error("Error fetching history:", error);
         });
+    } else {
+      router.push("/login");
     }
   }, []);
 
@@ -227,6 +230,18 @@ export default function ChatBot() {
     });
   };
 
+  // const handleLogout = () => {
+  //   localStorage.removeItem("authToken");
+  //   localStorage.removeItem("userId");
+  //   localStorage.removeItem("username");
+
+  //   setUser(null);
+  //   setHistory([]);
+  //   setCurrentChatIndex(null);
+
+  //   window.location.href = "/login";
+  // };
+
   // Save chat history to Firestore databse
 
   return (
@@ -248,20 +263,29 @@ export default function ChatBot() {
           bgcolor: "#1A4D2E",
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: "none" } }}
+              onChange={(e) => setMessage(e.target.value)}
+            >
+              <SendIcon />
+            </IconButton>
+            <Typography variant="h5" noWrap component="div">
+              AI Chat Assistant
+            </Typography>
+          </div>
           <IconButton
             color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-            onChange={(e) => setMessage(e.target.value)}
+            aria-label="logout"
+            // onClick={handleLogout}
           >
-            <SendIcon />
+            <LogoutIcon />
           </IconButton>
-          <Typography variant="h5" noWrap component="div">
-            AI Chat Assistant
-          </Typography>
         </Toolbar>
       </AppBar>
 

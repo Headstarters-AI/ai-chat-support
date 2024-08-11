@@ -1,7 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import ChatBot from "./components/ChatBot";
-import Login from "./components/Login";
+import dynamic from "next/dynamic";
+const ChatBot = dynamic(() => import("./components/ChatBot"), { ssr: false });
+const Login = dynamic(() => import("./components/Login"), { ssr: false });
+
 import styles from "./AuthWrapper.module.css";
 
 export default function AuthWrapper() {
@@ -29,6 +31,12 @@ export default function AuthWrapper() {
     padding: "20px",
     boxSizing: "border-box",
   };
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+  };
 
   if (loading) {
     return <div style={containerStyle}>Loading...</div>;
@@ -44,7 +52,7 @@ export default function AuthWrapper() {
 
   return (
     <div className={styles.container}>
-      <ChatBot />
+      <ChatBot onLogout={handleLogout} />;
     </div>
   );
 }
