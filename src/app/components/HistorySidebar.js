@@ -95,7 +95,7 @@ export default function HistorySidebar({
             <IconButton
               size="small"
               onClick={(e) => {
-                e.stopPropagation(); // Prevent the button click from triggering the chat selection
+                e.stopPropagation(); 
                 onDeleteChat(index);
               }}
             >
