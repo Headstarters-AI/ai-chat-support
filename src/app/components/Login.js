@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import Register from "./Register";
 import ChatBot from "./ChatBot";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showRegister, setShowRegister] = useState(false);
+  const handleRegistrationComplete = () => {
+    setShowRegister(false);
+  };
   const [error, setError] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -28,6 +31,7 @@ const Login = () => {
       localStorage.setItem("userId", userId);
       localStorage.setItem("username", username);
       setIsAuthenticated(true);
+      onLogin();
     } else {
       const { message } = await response.json();
       setError(message || "Login failed. Please check your credentials.");
@@ -56,7 +60,7 @@ const Login = () => {
       ) : (
         <>
           {showRegister ? (
-            <Register />
+            <Register onRegistrationComplete={handleRegistrationComplete} />
           ) : (
             <>
               <h2

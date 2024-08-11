@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Login from "./Login"; // Import the Login component
 
-const Register = () => {
+const Register = ({ onRegistrationComplete }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -28,6 +28,7 @@ const Register = () => {
     if (response.ok) {
       alert("Registration successful. Please log in.");
       setIsRegistered(true); // Set the state to true to render the Login component
+      onRegistrationComplete();
     } else {
       const { message } = await response.json();
       alert(message || "Registration failed. Please try again.");
