@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { Box, Typography, Paper } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { materialDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 export default function ChatBox({ currentChat }) {
@@ -24,7 +24,7 @@ export default function ChatBox({ currentChat }) {
         flexGrow: 1,
         overflow: "auto",
         p: 2,
-        backgroundColor: "#F9F5EB",
+        border: "1px solid red",
         borderRadius: 2,
         mb: 2,
         maxHeight: "80vh",
@@ -52,7 +52,7 @@ export default function ChatBox({ currentChat }) {
               <ReactMarkdown
                 components={{
                   code({ node, inline, className, children, ...props }) {
-                    const match = /language-(\w+)/.exec(className || '');
+                    const match = /language-(\w+)/.exec(className || "");
                     return !inline && match ? (
                       <SyntaxHighlighter
                         style={materialDark}
@@ -60,7 +60,7 @@ export default function ChatBox({ currentChat }) {
                         PreTag="div"
                         {...props}
                       >
-                        {String(children).replace(/\n$/, '')}
+                        {String(children).replace(/\n$/, "")}
                       </SyntaxHighlighter>
                     ) : (
                       <code className={className} {...props}>
@@ -79,7 +79,14 @@ export default function ChatBox({ currentChat }) {
                     </ol>
                   ),
                   li: ({ children, ...props }) => (
-                    <li style={{ paddingLeft: "10px", marginBottom: "8px", listStyleType: "disc" }} {...props}>
+                    <li
+                      style={{
+                        paddingLeft: "10px",
+                        marginBottom: "8px",
+                        listStyleType: "disc",
+                      }}
+                      {...props}
+                    >
                       {children}
                     </li>
                   ),

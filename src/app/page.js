@@ -16,6 +16,9 @@ export default function AuthWrapper() {
     setLoading(false);
   }, []);
 
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
   const containerStyle = {
     display: "flex",
     flexDirection: "column",
@@ -34,7 +37,7 @@ export default function AuthWrapper() {
   if (!isAuthenticated) {
     return (
       <div style={containerStyle}>
-        <Login />
+        <Login onLogin={handleLogin} />
       </div>
     );
   }
