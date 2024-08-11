@@ -52,7 +52,7 @@ export default function AuthWrapper() {
 
   return (
     <div className={styles.container}>
-      <ChatBot onLogout={handleLogout} />;
+      <ChatBot onLogout={handleLogout} />
     </div>
   );
 }

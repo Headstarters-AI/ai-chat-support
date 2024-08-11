@@ -100,9 +100,12 @@ export default function ChatBox({ currentChat }) {
       ) : (
         <Typography
           variant="body1"
-          color="#1A4D2E"
+          color="white"
           textAlign="center"
           justifyContent="center"
+          margin=" 0 auto"
+          alignItems="center"
+          justifyItems={"center"}
         >
           Start a new chat or select a chat from the history.
         </Typography>
