@@ -30,7 +30,27 @@ export default function ChatBot() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [user, setUser]=useState(null);
 
+  
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const username = localStorage.getItem("username");
+    if (token) {
+      setUser(username);
+     // console.log(`name: ${username}`);
+      fetch(`/api/auth/getHistory?username=${username}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setHistory(data.history || []); 
+        })
+        .catch((error) => {
+          console.error("Error fetching history:", error);
+        });
+    }
+  }, []);
+  
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -62,6 +82,7 @@ export default function ChatBot() {
         return chat;
       });
 
+
       return updatedHistory;
     });
 
@@ -88,15 +109,31 @@ export default function ChatBot() {
               if (index === currentChatIndex) {
                 let updatedChat = chat.chat.slice(0, -1); // Remove the assistant's placeholder
                 updatedChat.push({ role: 'assistant', content: assistantResponse }); // Add the complete assistant response
-
+               // console.log(`updated chat: ${JSON.stringify(updatedChat,null,2)}`)
                 return {
                   ...chat,
                   chat: updatedChat,
                 };
               }
+             // console.log(`chat: ${JSON.stringify(chat, null, 2)}`);
+
               return chat;
             });
-
+            //console.log(`update history: ${JSON.stringify(updatedHistory,null,2)}`)
+            //store in data base here
+            fetch('/api/auth/updateHistory', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                username: user,
+                updatedHistory,
+              }),
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
             return updatedHistory;
           });
           return assistantResponse;
@@ -157,6 +194,20 @@ export default function ChatBot() {
       }
 
       setCurrentChatIndex(newCurrentChatIndex);
+      // console.log(`new History:${JSON.stringify(newHistory,null,2)}`)
+      fetch('/api/auth/updateHistory', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: user,
+          updatedHistory: newHistory,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
       return newHistory;
     });
   };

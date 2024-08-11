@@ -23,9 +23,11 @@ const Login = () => {
     });
 
     if (response.ok) {
-      const { token } = await response.json();
+      const { token, userId, username } = await response.json();
       localStorage.setItem("authToken", token);
-      setIsAuthenticated(true); // Set isAuthenticated to true on successful login
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("username", username);
+      setIsAuthenticated(true);
     } else {
       const { message } = await response.json();
       setError(message || "Login failed. Please check your credentials.");
