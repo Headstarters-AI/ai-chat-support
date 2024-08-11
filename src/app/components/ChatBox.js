@@ -24,7 +24,7 @@ export default function ChatBox({ currentChat }) {
         flexGrow: 1,
         overflow: "auto",
         p: 2,
-        border: "1px solid red",
+
         borderRadius: 2,
         mb: 2,
         maxHeight: "80vh",
